@@ -14,9 +14,9 @@ The project is designed as an introductory programming assignment (PA0). Most of
 ## 👥 Team Information
 
 ### Partner #1
-- **Name:**
-- **Student Number:**
-- **Email:**
+- **Name:** Angel Nieves
+- **Student Number:** 802-22-9421
+- **Email:** angel.nieves25@upr.edu
 
 ### Partner #2
 - **Name:**
