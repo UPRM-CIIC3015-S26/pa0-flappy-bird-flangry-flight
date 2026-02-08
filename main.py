@@ -6,6 +6,7 @@ pygame.mixer.init()
 Flap_Sound= pygame.mixer.Sound("sfx_wing.mp3 ")
 bird_die= pygame.mixer.Sound("sfx_die.mp3")
 POINT= pygame.mixer.Sound("sfx_point.mp3")
+Background_Music= pygame.mixer.Sound("Music.mp3")
 '''
 Welcome to PA0 – Flappy Bird! Throughout this code, you are going to find a recreation of a game you have probably
 heard of before. This is an introductory assignment designed to help you familiarize yourself with what you can expect 
@@ -97,8 +98,8 @@ while running:
     if game_started == True and game_over == False:
         bird_velocity = bird_velocity + gravity
         bird_y = bird_y + bird_velocity
-
         pipe_x = pipe_x - pipe_speed
+
 
 
         if pipe_x < -70:
