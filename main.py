@@ -1,5 +1,11 @@
 import pygame, random
+from pygame import K_SPACE
+
 pygame.init()
+pygame.mixer.init()
+Flap_Sound= pygame.mixer.Sound("sfx_wing.mp3 ")
+bird_die= pygame.mixer.Sound("sfx_die.mp3")
+POINT= pygame.mixer.Sound("sfx_point.mp3")
 '''
 Welcome to PA0 – Flappy Bird! Throughout this code, you are going to find a recreation of a game you have probably
 heard of before. This is an introductory assignment designed to help you familiarize yourself with what you can expect 
@@ -51,7 +57,7 @@ pipe_height = random.randint(100, 400)
 # TODO 2.2: The too fast problem DONE ANGEL
 # The pipes are moving way too fast! Play around with the pipe_speed variable until you find a good
 # speed for the player to play in!
-pipe_speed = 4.5
+pipe_speed = 4
 
 score = 0
 game_over = False
@@ -91,7 +97,9 @@ while running:
     if game_started == True and game_over == False:
         bird_velocity = bird_velocity + gravity
         bird_y = bird_y + bird_velocity
+
         pipe_x = pipe_x - pipe_speed
+
 
         if pipe_x < -70:
             pipe_x = 400
@@ -100,10 +108,12 @@ while running:
             # When you pass through the pipes the score should be updated to the current score + 1. Implement the
             # logic to accomplish this scoring system.
             score = 1 + score
+            POINT.play()
 
 
         if bird_y > 600 or bird_y < 0:
             game_over = True
+            bird_die.play()
 
         bird_rect = pygame.Rect(bird_x, bird_y, 30, 30)
         top_pipe_rect = pygame.Rect(pipe_x, 0, pipe_width, pipe_height)
@@ -111,6 +121,7 @@ while running:
 
         if bird_rect.colliderect(top_pipe_rect) or bird_rect.colliderect(bottom_pipe_rect):
             game_over = True
+            bird_die.play()
 
     screen.fill(pygame.Color('grey12'))
     # TODO 5: A Bird's Color DONE; Alexander
