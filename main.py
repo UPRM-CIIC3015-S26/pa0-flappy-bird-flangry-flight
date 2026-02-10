@@ -1,12 +1,16 @@
 import pygame, random
-from pygame import K_SPACE
+from pygame import K_SPACE, K_TAB
 
 pygame.init()
 pygame.mixer.init()
-Flap_Sound= pygame.mixer.Sound("sfx_wing.mp3 ")
+Flap_Sound= pygame.mixer.Sound("sfx_wing.mp3")
 bird_die= pygame.mixer.Sound("sfx_die.mp3")
+bird_smack= pygame.mixer.Sound("sfx_hit.wav")
 POINT= pygame.mixer.Sound("sfx_point.mp3")
-Background_Music= pygame.mixer.Sound("Music.mp3")
+Bg_Music1= pygame.mixer.Sound("Music1.mp3")
+Bg_Music2= pygame.mixer.Sound("Music2.mp3")
+Bg_Music3= pygame.mixer.Sound("Music3.mp3")
+Track = 0
 '''
 Welcome to PA0 – Flappy Bird! Throughout this code, you are going to find a recreation of a game you have probably
 heard of before. This is an introductory assignment designed to help you familiarize yourself with what you can expect 
@@ -35,6 +39,9 @@ title_y = 150
 
 instruction_x = 80
 instruction_y = 550
+
+instr_mus_x = 75
+instr_mus_y = 575
 
 score_x = 200
 score_y = 10
@@ -67,6 +74,9 @@ game_started = False
 clock = pygame.time.Clock()
 
 running = True
+
+
+
 while running:
     # TODO 6: Changing the name! DONE ANGEL,
     # D'oh! This is not yout name isn't follow the detailed instructions on the PDF to complete this task.
@@ -74,6 +84,20 @@ while running:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             running = False
+        if event.type == pygame.KEYDOWN and event.key == pygame.K_m:
+                Track = Track + 1
+                if Track > 3:
+                    Track = 0
+                if Track == 0:
+                    Bg_Music3.stop()
+                elif Track == 1:
+                    Bg_Music1.play(-1)
+                elif Track == 2:
+                    Bg_Music1.stop()
+                    Bg_Music2.play(-1)
+                else:
+                    Bg_Music2.stop()
+                    Bg_Music3.play(-1)
         if event.type == pygame.KEYDOWN:
             if event.key == pygame.K_SPACE:
                 if game_started == False:
@@ -81,6 +105,7 @@ while running:
                     bird_velocity = jump
                 elif game_over == False:
                     bird_velocity = jump
+                    Flap_Sound.play()
                 else:
                     # TODO 3: Spawning back the Player DONE; Alexander
                     # After the bird crashes with a pipe the when spawning back the player it doesn't appear.
@@ -88,18 +113,19 @@ while running:
                     # of the bird)
                     bird_velocity = 0
                     bird_y = 400
-                    bird_velocity = -16
+                    bird_x = 50
+                    bird_velocity = jump
                     pipe_x = 400
                     score = 0
                     game_over = False
                     game_started = True
                     pipe_height = random.randint(100, 400)
 
-    if game_started == True and game_over == False:
+    if game_started == True:
         bird_velocity = bird_velocity + gravity
         bird_y = bird_y + bird_velocity
-        pipe_x = pipe_x - pipe_speed
-
+        if game_over == False:
+            pipe_x = pipe_x - pipe_speed
 
 
         if pipe_x < -70:
@@ -112,17 +138,20 @@ while running:
             POINT.play()
 
 
-        if bird_y > 600 or bird_y < 0:
+        if (bird_y > 600 or bird_y < 0) and game_over == False:
             game_over = True
             bird_die.play()
+            bird_smack.play()
+            # bird_y = 300
 
         bird_rect = pygame.Rect(bird_x, bird_y, 30, 30)
         top_pipe_rect = pygame.Rect(pipe_x, 0, pipe_width, pipe_height)
         bottom_pipe_rect = pygame.Rect(pipe_x, pipe_height + pipe_gap, pipe_width, 600)
 
-        if bird_rect.colliderect(top_pipe_rect) or bird_rect.colliderect(bottom_pipe_rect):
+        if (bird_rect.colliderect(top_pipe_rect) or bird_rect.colliderect(bottom_pipe_rect)) and game_over == False:
             game_over = True
             bird_die.play()
+            bird_smack.play()
 
     screen.fill(pygame.Color('grey12'))
     # TODO 5: A Bird's Color DONE; Alexander
@@ -137,7 +166,9 @@ while running:
     if game_started == False: # Start UI -->
         title_text = big_font.render("Flappy Bird", True, WHITE)
         instruction_text = small_font.render("Press space bar to flap!", True, WHITE)
+        instruction_text_mus = small_font.render("Press m to toggle music!", True, WHITE)
         screen.blit(title_text, (title_x, title_y))
+        screen.blit(instruction_text_mus, (instr_mus_x, instr_mus_y))
         screen.blit(instruction_text, (instruction_x, instruction_y))
 
     if game_over: # GameOver UI -->
